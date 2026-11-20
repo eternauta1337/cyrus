@@ -30,6 +30,7 @@ import {
 	StreamingPrompt,
 } from "cyrus-core";
 import dotenv from "dotenv";
+import { claudeSettingSources } from "./eternauta-settings.js";
 import { ClaudeMessageFormatter, type IMessageFormatter } from "./formatter.js";
 import { buildHomeDirectoryDisallowedTools } from "./home-directory-restrictions.js";
 import {
@@ -694,7 +695,7 @@ export class ClaudeRunner extends EventEmitter implements IAgentRunner {
 					// load file based settings, to maintain more backwards compatibility,
 					// particularly with CLAUDE.md files, settings files, and custom slash commands,
 					// see: https://docs.claude.com/en/docs/claude-code/sdk/migration-guide#settings-sources-no-longer-loaded-by-default
-					settingSources: ["user", "project", "local"],
+					settingSources: claudeSettingSources(), // eternauta
 					// Preserve the pre-0.3.286 SDK permission policy: Cyrus tool rules
 					// and canUseTool handle approvals, regardless of permissions.defaultMode,
 					// provider, or telemetry. Omission now lets Claude Code select auto.

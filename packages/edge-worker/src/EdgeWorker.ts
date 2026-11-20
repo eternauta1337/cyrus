@@ -14,6 +14,7 @@ import type {
 import {
 	buildBaseSessionEnv,
 	ClaudeRunner,
+	claudeSettingSources,
 	HttpSessionStore,
 	normalizeMcpHttpTransport,
 } from "cyrus-claude-runner";
@@ -7675,7 +7676,7 @@ ${input.userComment}
 							...(Object.keys(mcpServers).length > 0 && { mcpServers }),
 							...(allowedTools.length > 0 && { allowedTools }),
 							...(disallowedTools.length > 0 && { disallowedTools }),
-							settingSources: ["user", "project", "local"],
+							settingSources: claudeSettingSources(), // eternauta
 							permissionMode: "default",
 							strictMcpConfig: this.config.strictMcpConfig ?? true,
 							// CLAUDE_CODE_SUBPROCESS_ENV_SCRUB is intentionally not set here;

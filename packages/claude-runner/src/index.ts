@@ -20,6 +20,7 @@ export {
 	type ToolName,
 	writeTools,
 } from "./config.js";
+export { claudeSettingSources } from "./eternauta-settings.js";
 export {
 	ClaudeMessageFormatter,
 	type IMessageFormatter,
