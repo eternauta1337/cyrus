@@ -24,7 +24,7 @@ eternauta/instalar.sh --prefix /opt/cyrus  # en otro lado
 ```
 
 Instala con el mismo layout que `npm install -g --prefix … cyrus-ai`, así que el servicio que corre
-`<prefix>/bin/cyrus` no cambia. Después hay que reiniciarlo. `<prefix>/lib/node_modules/cyrus-ai/ETERNAUTA`
+`<prefix>/bin/cyrus` no cambia. Después hay que reiniciarlo **enseguida**: entre que se instala y se reinicia, el Cyrus que sigue corriendo tiene los archivos cambiados abajo y las sesiones que arrancan fallan (pasó el 20/11 con `Native CLI binary … not found`). `<prefix>/lib/node_modules/cyrus-ai/ETERNAUTA`
 dice qué commit del fork está instalado, y la instalación anterior queda en `cyrus-ai.anterior`.
 
 ## Actualizar a una versión nueva de arriba
