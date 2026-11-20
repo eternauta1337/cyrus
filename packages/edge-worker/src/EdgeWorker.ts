@@ -7432,6 +7432,22 @@ ${input.userComment}
 		webhook: AgentSessionCreatedWebhook | AgentSessionPromptedWebhook,
 		repository: RepositoryConfig,
 	): { allowed: true } | { allowed: false; reason: string; userName: string } {
+		// eternauta: on a prompted webhook, check the author of the new message,
+		// not the session creator. Sessions created by app users arrive with an
+		// empty creator and would otherwise stay blocked for everyone.
+		// agentActivity carries only the user id, so the allowlist must match by id.
+		const author =
+			"agentActivity" in webhook ? webhook.agentActivity?.userId : undefined;
+		if (author) {
+			const result = this.userAccessControl.checkAccess(
+				author,
+				undefined,
+				repository.id,
+			);
+			return result.allowed
+				? { allowed: true }
+				: { allowed: false, reason: result.reason, userName: author };
+		}
 		const creator = webhook.agentSession.creator;
 		const userId = creator?.id;
 		const userEmail = creator?.email;
