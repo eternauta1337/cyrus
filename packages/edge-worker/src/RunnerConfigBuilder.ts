@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type {
 	HookCallbackMatcher,
@@ -26,6 +27,22 @@ import { appendBrowserUseAddendum } from "./prompts/browserUsePromptAddendum.js"
 import { appendCloudRuntimeAddendum } from "./prompts/cloudRuntimePromptAddendum.js";
 import { appendFailureModeAddendum } from "./prompts/failureModePromptAddendum.js";
 import { appendGitHubCliMediaAddendum } from "./prompts/githubCliMediaPromptAddendum.js";
+
+/**
+ * eternauta: contents of CYRUS_CONTEXT_FILE, read every time a session is
+ * built so a generated file can change without a restart. Unlike the hosted
+ * customSystemInstructions, it has no size cap. Missing or unreadable file:
+ * nothing is added.
+ */
+export function readContextFile(): string | undefined {
+	const path = process.env.CYRUS_CONTEXT_FILE;
+	if (!path) return undefined;
+	try {
+		return readFileSync(path, "utf8").trim() || undefined;
+	} catch {
+		return undefined;
+	}
+}
 
 /**
  * Subset of McpConfigService consumed by RunnerConfigBuilder.
@@ -255,8 +272,13 @@ export class RunnerConfigBuilder {
 		systemPrompt: string | undefined,
 	): string | undefined {
 		const instructions = this.getCustomInstructions()?.trim();
-		if (!instructions) return systemPrompt;
-		return [systemPrompt, `## Custom instructions\n\n${instructions}`]
+		const context = readContextFile();
+		if (!instructions && !context) return systemPrompt;
+		return [
+			systemPrompt,
+			instructions && `## Custom instructions\n\n${instructions}`,
+			context,
+		]
 			.filter(Boolean)
 			.join("\n\n");
 	}

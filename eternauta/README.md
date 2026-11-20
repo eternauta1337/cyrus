@@ -11,6 +11,8 @@ prueba. Lo usan todos los Cyrus de Ale (archi, macmini, la VM de Azul) y Rubenci
 | `CYRUS_HOME_SIN_LIMITES=1` turns off home directory restrictions | con esa variable en el servicio, Claude no tiene restricciones de lectura sobre el home. Sin la variable, Cyrus se porta como siempre | no hay opción equivalente |
 | access check uses the message author on prompted webhooks | el control de acceso mira al autor del mensaje, no al creador de la sesión. Antes, una sesión creada por un agente quedaba bloqueada para todos | sin reportar |
 | clear a stale stop flag when a session is resumed | después de frenar una sesión, la próxima respuesta se publica en Linear. Antes se la comía la marca de freno | [#1389](https://github.com/cyrusagents/cyrus/issues/1389) |
+| `CYRUS_CLAUDE_SIN_USER_SETTINGS=1` skips the user's Claude settings | con esa variable, Claude no carga los settings del usuario de la máquina (plugins, MCP, permisos de `~/.claude`), pero sigue usando su credencial. Para cuando la cuenta de la máquina es de una persona. Viene de Rubencito | no hay opción |
+| `CYRUS_CONTEXT_FILE` appended to the system prompt | el contenido de ese archivo se suma al prompt de sistema de cada sesión nueva, de cualquier motor. Se relee en cada sesión, sin reiniciar. Viene de Rubencito | `customSystemInstructions` (0.2.80) es texto fijo de hasta 8000 caracteres |
 
 Todo lo que cambia está marcado con un comentario `eternauta:` en el código, y las pruebas están en
 `packages/*/test/eternauta-*.test.ts`. Cuando arriba arregle algo, se saca el commit.
