@@ -8001,6 +8001,13 @@ ${input.userComment}
 		commentAuthor?: string,
 		commentTimestamp?: string,
 	): Promise<void> {
+		// eternauta: a full stop kills the runner before it emits a result, so the
+		// stop flag is never consumed and would swallow the next turn's result
+		// (cyrusagents/cyrus#1389). With no live runner, the flag is stale.
+		// Optional call: upstream tests mock the manager without this method.
+		if (!session.agentRunner?.isRunning?.()) {
+			agentSessionManager.clearStopRequest?.(sessionId);
+		}
 		const log = this.logger.withContext({ sessionId });
 		// Check for existing runner
 		const existingRunner = session.agentRunner;

@@ -458,6 +458,11 @@ export class AgentSessionManager extends EventEmitter {
 		this.stopRequestedSessions.add(linearAgentActivitySessionId);
 	}
 
+	/** eternauta: drop a stale stop flag (cyrusagents/cyrus#1389). */
+	clearStopRequest(linearAgentActivitySessionId: string): void {
+		this.stopRequestedSessions.delete(linearAgentActivitySessionId);
+	}
+
 	/**
 	 * Handle child session completion and resume parent
 	 */
