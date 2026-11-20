@@ -27,6 +27,11 @@ export function buildHomeDirectoryDisallowedTools(
 	cwd: string,
 	additionalAllowedPaths: string[] = [],
 ): string[] {
+	// eternauta: opt-out for self-hosted runners whose owner wants no home
+	// restrictions. There is no upstream setting for this.
+	if (process.env.CYRUS_HOME_SIN_LIMITES === "1") {
+		return [];
+	}
 	const home = homedir();
 
 	// Collect all paths that should be accessible, as segment arrays relative to home.
