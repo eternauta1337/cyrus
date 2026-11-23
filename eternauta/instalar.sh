@@ -46,8 +46,15 @@ else
 fi
 NUEVO=$DEST/cyrus-ai.nuevo
 mkdir -p "$DEST"
-rm -rf "$NUEVO"
-pnpm --filter cyrus-ai deploy --prod --legacy "$NUEVO" >/dev/null
+rm -rf "$NUEVO" "$NUEVO.links"
+pnpm --filter cyrus-ai deploy --prod --legacy "$NUEVO.links" >/dev/null
+# pnpm deploy arma el árbol con hardlinks: los paquetes del workspace comparten inodo con
+# packages/*/dist de este checkout. tsc reescribe esos archivos en el lugar, así que un `pnpm build`
+# acá le cambiaba el código a la instalación que está corriendo, sin los archivos nuevos. El 23/11
+# eso dejó los tres Cyrus de archi caídos 11 horas al primer reinicio (ALE-182). Una copia propia
+# (cp -R no sigue los symlinks de .pnpm) la desata del checkout y de la store de pnpm.
+cp -R "$NUEVO.links" "$NUEVO"
+rm -rf "$NUEVO.links"
 printf 'cyrus-ai %s\nfork eternauta1337/cyrus %s\ninstalado %s\n' \
   "$VERSION" "$(git rev-parse HEAD)" "$(date -u +%FT%TZ)" > "$NUEVO/ETERNAUTA"
 node "$NUEVO/dist/src/app.js" --version >/dev/null || { echo "✗ la versión nueva no arranca" >&2; exit 1; }
